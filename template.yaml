@@ -5,47 +5,47 @@ Description: >
 
   Sample SAM Template for sam-app
   
-# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
     Timeout: 3
 
 Resources:
   HelloWorldFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Type: AWS::Serverless::Function
     Properties:
       CodeUri: hello-world/
       Handler: app.lambdaHandler
-      Runtime: nodejs12.x
-      # AutoPublishAlias: live
-      # DeploymentPreference:
-      #   Type: Canary10Percent5Minutes
-          # Alarms:
-          # - !Ref CanaryErrorsAlarm
+      Runtime: nodejs10.x
+      AutoPublishAlias: live
+      DeploymentPreference:
+        Type: Canary10Percent5Minutes
+        Alarms:
+          - !Ref CanaryErrorsAlarm
       Events:
         HelloWorld:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Type: Api
           Properties:
             Path: /hello
             Method: get
-  # CanaryErrorsAlarm:
-  # Type: AWS::CloudWatch::Alarm
-  # Properties:
-  #   AlarmDescription: Lambda function canary errors
-  #   ComparisonOperator: GreaterThanThreshold
-  #   EvaluationPeriods: 2
-  #   MetricName: Errors
-  #   Namespace: AWS/Lambda
-  #   Period: 60
-  #   Statistic: Sum
-  #   Threshold: 0
-  #   Dimensions:
-  #     - Name: Resource
-  #       Value: !Sub "${HelloWorldFunction}:live"
-  #     - Name: FunctionName
-  #       Value: !Ref HelloWorldFunction
-  #     - Name: ExecutedVersion
-  #       Value: !GetAtt HelloWorldFunction.Version.Version
+            
+  CanaryErrorsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: Lambda function canary errors
+      ComparisonOperator: GreaterThanThreshold
+      EvaluationPeriods: 2
+      MetricName: Errors
+      Namespace: AWS/Lambda
+      Period: 60
+      Statistic: Sum
+      Threshold: 0
+      Dimensions:
+        - Name: Resource
+          Value: !Sub "${HelloWorldFunction}:live"
+        - Name: FunctionName
+          Value: !Ref HelloWorldFunction
+        - Name: ExecutedVersion
+          Value: !GetAtt HelloWorldFunction.Version.Version
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
